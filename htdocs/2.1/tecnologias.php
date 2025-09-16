@@ -9,15 +9,17 @@
 
         <header>
             <?php
-
+                // Incluye el contenido de cabecera desde otro archivo PHP
                 require("cabecera.inc.php");
              ?> 
         </header>
 
+        <!-- Barra de navegación -->
         <nav>
             <a href="principal.php">principal.php</a>
         </nav>
        
+        <!-- Sección principal con lista de tecnologías -->
         <section>
              <p>
                 <ul>
@@ -31,7 +33,7 @@
         
         <footer>
               <?php
-
+                // Incluye el contenido del footer desde otra carpeta
                 require(__DIR__ . '/../2.2/footer.inc.php');
              ?> 
         </footer>

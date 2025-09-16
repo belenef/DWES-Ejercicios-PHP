@@ -26,29 +26,31 @@
 
         <header>
             <?php
-
+                // Incluye la cabecera desde otra carpeta
                  require(__DIR__ . '/../2.1/cabecera.inc.php');
              ?> 
         </header>
 
-        
+         <!-- Barra de navegación -->
          <nav>
            <a href="../2.1/principal.php">principal.php</a>
         </nav>
 
+        <!-- Sección principal con tabla de información del servidor -->
         <section>
             <table>
                 <thead>
                     <tr>
-                        <th>Clave</th>
-                        <th>Valor</th>
+                        <th>Clave</th>  <!-- Nombre de la variable de servidor -->
+                        <th>Valor</th>  <!-- Valor de la variable de servidor -->
                     </tr>
                 </thead>
                 <tbody>
                     <?php
+                        // Recorre el array $_SERVER y muestra todas las claves y valores
                         foreach($_SERVER as $clave => $valor) {
                             echo "<tr>";
-                            echo "<td>" . htmlspecialchars($clave) . "</td>";
+                            echo "<td>" . htmlspecialchars($clave) . "</td>";   // Evita problemas de caracteres especiales
                             echo "<td>" . htmlspecialchars($valor) . "</td>";
                             echo "</tr>";
                         }
@@ -59,7 +61,7 @@
         
         <footer>
               <?php
-
+                 // Incluye el footer
                 require("footer.inc.php");
              ?> 
         </footer>
