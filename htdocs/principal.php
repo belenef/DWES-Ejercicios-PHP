@@ -25,6 +25,7 @@
             <a href="tecnologias.php">tecnologias.php</a> |
             <a href="rrss.php">rrss.php</a> |
             <a href="count.php">count.php</a> |
+            <a href="server.php">server.php</a> |
             <a href="http://www.gmail.com">beleneezz@gmail.com</a>
 
         </nav>
