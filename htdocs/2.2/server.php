@@ -31,7 +31,7 @@
              ?> 
         </header>
 
-         <!-- Barra de navegación -->
+        <!-- Barra de navegación -->
          <nav>
            <a href="../2.1/principal.php">principal.php</a>
         </nav>

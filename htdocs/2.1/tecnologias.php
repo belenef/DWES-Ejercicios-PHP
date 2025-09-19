@@ -9,7 +9,7 @@
 
         <header>
             <?php
-                // Incluye el contenido de cabecera desde otro archivo PHP
+                 // Incluye el contenido de cabecera desde otro archivo PHP
                 require("cabecera.inc.php");
              ?> 
         </header>

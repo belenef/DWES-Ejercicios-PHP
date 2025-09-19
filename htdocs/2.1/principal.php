@@ -21,9 +21,9 @@
                 require("cabecera.inc.php");
              ?> 
         </header>
-
-        <!-- Barra de navegación con enlaces a otras páginas -->
         <nav>
+
+           <!-- Barra de navegación con enlaces a otras páginas -->
             <a href="tecnologias.php">tecnologias.php</a> |
             <a href="rrss.php">rrss.php</a> |
             <a href="/2.2/count.php">count.php</a> |
@@ -42,26 +42,33 @@
         
             </p>
 
-             <!-- formulario de contacto -->
+            <!-- formulario de contacto -->
             <h2>Contacto</h2>
             <h4>Aquí podrás enviar alguna consulta:</h4>
-                <form action="#" method="post">
+                <form name="input" action="../2.3/consulta.php" method="post">
 
                     <!-- Campo de texto para nombre -->
                     <label for="nombre">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" required><br><br>
 
-                    <!-- Campo de correo electrónico -->
+                    <!-- Campo de texto para email -->
                     <label for="email">Correo electrónico:</label>
                     <input type="email" id="email" name="email" required><br><br>
 
-                    <!-- Área de texto para la consulta -->
+                    <!-- Campo para checkbox -->
+                    <label for="checkbox">Checkbox:</label>
+                    <input type="checkbox" id="checkbox" name="checkbox"><br><br>
+
+                    <!-- Campo para seleccionar fecha -->
+                    <label for="date">Fecha:</label>
+                    <input type="date" id="date" name="date"><br><br>
+
+                    <!-- Área de texto para consulta -->
                     <label for="consulta">Consulta:</label><br>
                     <textarea id="consulta" name="consulta" rows="4" cols="40" required></textarea><br><br>
 
-                    <!-- Botón de envío del formulario -->
+                    <!-- Botón para enviar el formulario -->
                     <input type="submit" value="Enviar">
-
                 </form>
             
         </section>

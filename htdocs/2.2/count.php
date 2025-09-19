@@ -19,7 +19,7 @@
            <a href="../2.1/principal.php">principal.php</a>
         </nav>
 
-        <!-- Sección principal con conteo y cálculo de factorial -->
+         <!-- Sección principal con conteo y cálculo de factorial -->
         <section>
           
             <?php
@@ -35,12 +35,12 @@
                 $cadena = "5! = ";
                 for ($j = 5; $j >= 1; $j--) {
                     $factorial *= $j;   // Multiplicación que se acumula
-                    $cadena .= $j;  // Construcción de la cadena del factorial
+                    $cadena .= $j;      // Construcción de la cadena del factorial
                     if ($j > 1) {
-                        $cadena .= " x ";  // Añade el símbolo de multiplicación si no es el último número       
+                        $cadena .= " x "; // Añade el símbolo de multiplicación si no es el último número    
                     }
                 }
-                $cadena .= " = " . $factorial;  // Añade el resultado final
+                $cadena .= " = " . $factorial;   // Añade el resultado final
                 echo "<br><br>" . $cadena;  // Muestra el resultado en pantalla
             ?>
         </section>
