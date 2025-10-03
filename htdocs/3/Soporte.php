@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>SERVER</title>
+        <title>Soporte</title>
     </head>
 
     <body>
