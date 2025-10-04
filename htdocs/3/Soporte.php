@@ -11,7 +11,7 @@
 
             class Soporte{
                 public $titulo;
-                public $numero;
+                protected $numero;
                 public $precio;
                 private $VAT = 0.21;
                 public function __construct($titulo, $numero, $precio){

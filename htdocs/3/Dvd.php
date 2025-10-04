@@ -31,8 +31,7 @@
 
 
                  public function muestraResumen(){
-                    echo "<br>" . $this->titulo . "";
-                    echo "<br>" . $this->getPrecio() . " € (IVA no incluido)<br>";
+                    parent::muestraResumen();
                     echo "Idiomas: " . $this->getIdiomas() . "<br>";
                     echo "Formato Pantalla: " . $this->getFormatPantalla() . "<br>";
                 }

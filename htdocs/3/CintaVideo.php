@@ -24,8 +24,7 @@
                 }
 
                  public function muestraResumen(){
-                    echo "<br>" . $this->titulo . "<br>";
-                    echo "" . $this->getPrecio() . " € (IVA no incluido)<br>";
+                    parent::muestraResumen();
                     echo "Duración: " . $this->getDuracion() . " minutos<br><br>";
                 }
             }

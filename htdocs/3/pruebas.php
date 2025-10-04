@@ -6,7 +6,7 @@ echo "<strong>" . $soporte1->titulo . "</strong>";
 echo "<br>Precio: " . $soporte1->getPrecio() . " euros";
 echo "<br>Precio IVA incluido: " . $soporte1->getPrecioConIVA() . " euros";
 $soporte1->muestraResumen();
-echo "<br>";
+echo "<br><hr>";
 
 ?>
 
@@ -19,6 +19,7 @@ echo "<br>";
     echo "<br>Precio IVA incluido: " . $miCinta->getPrecioConIva() . " euros";
     echo "<br>Película en VHS:";
     $miCinta->muestraResumen();
+    echo "<hr>";
    
     
 ?>
@@ -32,5 +33,16 @@ echo "<br>";
     echo "<br>Precio IVA incluido: " . $miDvd->getPrecioConIva() . " euros";
     echo "<br>Película en DVD:";
     $miDvd->muestraResumen();
+     echo "<hr>";
     
+?>
+
+<?php
+    include "Juego.php";
+    $miJuego = new Juego("The Last of Us Part II", 26, 49.99, "PS4", 1, 1);
+    echo "<strong>" . $miJuego->titulo . "</strong>";
+    echo "<br>Precio: " . $miJuego->getPrecio() . " euros";
+    echo "<br>Precio IVA incluido: " . $miJuego->getPrecioConIva() . " euros";
+    echo "<br>Juego para: " . $miJuego->consola . "";
+    $miJuego->muestraResumen();
 ?>

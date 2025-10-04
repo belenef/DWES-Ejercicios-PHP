@@ -14,28 +14,29 @@
               private $minNumJugadores;
               private $maxNumJugadores;
 
-               public function __construct($titulo, $numero, $precio, $consola) {
+               public function __construct($titulo, $numero, $precio, $consola, $minNumJugadores, $maxNumJugadores) {
 
-                parent::__construct($titulo, $numero, $precio, $consola);
+                parent::__construct($titulo, $numero, $precio);
                 $this->consola=$consola;
+                $this->minNumJugadores=$minNumJugadores;
+                $this->maxNumJugadores=$maxNumJugadores;
             }
             
 
-              public function muestraJugadoresPosibles(){
-                
-              }
+            // Método que muestra los posibles jugadores
+            public function muestraJugadoresPosibles(){
+            if ($this->minNumJugadores == 1 && $this->maxNumJugadores == 1){
+                echo "Para un jugador<br>";
+            } elseif ($this->minNumJugadores == $this->maxNumJugadores){
+                echo "Para " . $this->minNumJugadores . " jugadores<br>";
+            } else {
+                echo "De " . $this->minNumJugadores . " a " . $this->maxNumJugadores . " jugadores<br>";
+            }
+        }
 
-              public function getConsola(){
-                
-              }
-
-                 public function muestraResumen(){
-                    echo "<br>" . $this->titulo . "";
-                    echo "<br>" . $this->getPrecio() . " € (IVA no incluido)<br>";
-                    echo "<br>". $this->getConsola() . "<br>";
-                    echo "<br>". $this->getMinNumJugadores() .
-                    "". $this->getMaxNumJugadores() .
-
+                 public function muestraResumen(){      
+                    parent::muestraResumen();
+                    $this->muestraJugadoresPosibles();
                 }
             }
             ?>
