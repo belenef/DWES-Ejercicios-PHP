@@ -3,7 +3,8 @@
 <style>
     input[type="number"]{
         width: 40px;                         
-        border: 2px solid #87b3c0ff;
+        border: 2px solid #C71585;
+        border-radius: 3px;
         margin-bottom: 10px;
     }
 
@@ -13,7 +14,8 @@
         }
 
     header{
-        background-color: #B3E5FC;
+        background-color: lightpink;
+        color: white;
         padding: 20px;
         margin-bottom: 20px;
         border-radius: 10px;

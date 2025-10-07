@@ -24,11 +24,12 @@ if (!defined('DESDE_STOCK')) {
         <style>
             body{ 
                 font-family: Arial;
-                color: #212222ff;
+                background-color: #ffffffff;
+                color: #ff3fb2;
             }
 
             header{
-                background-color: #B3E5FC;
+                background-color: #ffcdec;
                 padding: 20px;
                 border-radius: 10px;
             }
@@ -38,17 +39,26 @@ if (!defined('DESDE_STOCK')) {
             }
 
             .custom-list li::before {
-            content: "⭐";
-            margin-right: 15px;
+                content: ""; /* Necesario para mostrar el pseudo-elemento */
+                display: inline-block;
+                width: 20px;  /* ancho deseado */
+                height: 20px; /* alto deseado */
+                margin-right: 10px;
+                margin-bottom: 5px;
+                background-image: url("icono.png");
+                background-size: contain;  /* Ajusta la imagen al tamaño del bloque */
+                background-repeat: no-repeat;
+                vertical-align: middle;    /* centra con el texto */
             }
+
 
             a{
                 text-decoration: none;
-                color: darkgoldenrod;
+                color: #ff3fb2;
             }
 
             a:visited{
-                color: lightslategray;
+                color: lightgrey;
             }
         </style>
     </head>
