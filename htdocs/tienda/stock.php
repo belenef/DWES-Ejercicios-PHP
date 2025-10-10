@@ -36,14 +36,14 @@ if (!$cod) {
 // Si se envió el formulario, actualizar stock
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($_POST['unidades'] as $tienda => $unidades) {
-        $dwes->query("UPDATE stock SET unidades=$unidades WHERE producto='$cod' AND tienda='$tienda'");
+        $unidades = (int)$unidades;
+        $dwes->query("UPDATE stock SET unidades=$unidades WHERE producto='$cod' AND tienda=(SELECT cod FROM tienda WHERE nombre='$tienda')");
     }
     echo "<p style='color:green;'>Stock actualizado correctamente</p>";
 }
 
 // Consultar el stock actual
 $resultado = $dwes->query("SELECT tienda.nombre AS tienda, stock.unidades FROM stock JOIN tienda ON stock.tienda = tienda.cod WHERE stock.producto='$cod'");
-
 
 // al pinchar en un producto, te da la opción de actualizar el stock
 // IMPRIMIR POR PANTALLA:
