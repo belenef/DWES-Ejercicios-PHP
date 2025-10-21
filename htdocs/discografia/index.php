@@ -75,8 +75,8 @@ echo 'Falló la conexión: ' . $e->getMessage();
             <?php endwhile; ?>
         </ul>
 
-        <p><a href="canciones.php">Búsqueda de canciones</a></p>
-        <p><a href="albumnuevo.php">Añadir nuevo disco</a></p>
+        <p><a href="canciones.php">Búsqueda de canciones</a> | <a href="albumnuevo.php">Añadir nuevo disco</a></p>
+        
 
 
     </body>

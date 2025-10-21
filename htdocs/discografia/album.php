@@ -76,9 +76,11 @@ $formato = (!empty($album['formato'])) ? htmlspecialchars($album['formato']) : '
     </ul>
     
     
-    <p><a href="cancionnueva.php?codigo=<?= urlencode($album['codigo']) ?>">Añadir nueva canción</a></p>
-    <p><a href="borraralbum.php?codigo=<?= urlencode($album['codigo']) ?>">Borrar álbum</a></p>
-    <p><a href="index.php?codigo=<?= urlencode($album['codigo']) ?>">Volver a la lista de discos</a></p>
+    <p>
+        <a href="cancionnueva.php?codigo=<?= urlencode($album['codigo']) ?>">Añadir nueva canción</a> |
+        <a href="borraralbum.php?codigo=<?= urlencode($album['codigo']) ?>">Borrar álbum</a> |
+        <a href="index.php?codigo=<?= urlencode($album['codigo']) ?>">Volver a la lista de discos</a>
+    </p>
 
 </body>
 </html>

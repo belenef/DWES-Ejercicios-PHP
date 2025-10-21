@@ -137,6 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $dwes) {
             <label for="busqueda">Texto a buscar:</label>
             <input type="text" id="busqueda" name="busqueda" value="<?php echo htmlspecialchars($busqueda); ?>" required>
 
+            <!--Botones para filtrar la busqueda-->
             <div class="radios">
                 <label for="busqueda">Buscar en:</label>
                 <input type="radio" name="campo" value="titulo" <?php if($campo === 'titulo') echo 'checked'; ?>> Títulos de canción</input>
@@ -154,6 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $dwes) {
         </form>
     </div>
 
+    <!--Si hay resultados, mostrar la tabla-->
     <?php if (!empty($resultados)): ?>
         <table>
             <thead>
