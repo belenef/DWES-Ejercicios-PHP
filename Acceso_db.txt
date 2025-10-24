@@ -1,0 +1,15 @@
+// Conexión a la base de datos // TENGO QUE HACER SI O SI ESTO PARA QUE ME DE ACCESO A LA BASE DE DATOS
+$opc = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');
+try {
+    // Usa 127.0.0.1 en lugar de localhost para evitar conflictos con sockets
+    $dwes = new PDO(
+        'mysql:host=127.0.0.1;port=3307;dbname=discografia;charset=utf8',
+        'discografia',
+        'discografia',
+        $opc
+    );
+    $dwes->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die('Falló la conexión: ' . $e->getMessage());
+}
+// =========================================
