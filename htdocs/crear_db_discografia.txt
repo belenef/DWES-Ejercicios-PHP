@@ -1,0 +1,31 @@
+-- Creacion de la base de datos
+CREATE DATABASE discografia DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+USE discografia;
+
+-- Creamos las tablas
+DROP TABLE IF EXISTS `album`;
+CREATE TABLE album (
+codigo INT (7) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+titulo VARCHAR(50) NOT NULL ,
+discografica VARCHAR(25) NOT NULL ,
+formato ENUM('vinilo','cd','dvd','mp3') COLLATE utf8_bin NOT NULL,
+fechaLanzamiento DATE,
+fechaCompra DATE,
+precio decimal(5,2)
+) ENGINE = INNODB;
+
+DROP TABLE IF EXISTS `cancion`;
+CREATE TABLE cancion (
+titulo VARCHAR(50) NOT NULL ,
+album INT(7) NOT NULL ,
+posicion INT(2),
+duracion TIME,
+genero ENUM('Acustica','BSO','Blues','Folk','Jazz','New age','Pop','Rock','Electronica') COLLATE utf8_bin NOT NULL,
+PRIMARY KEY (titulo, album),
+FOREIGN KEY (album) REFERENCES album(codigo)
+) ENGINE = INNODB;
+
+
+CREATE USER 'discografia'@'localhost'
+IDENTIFIED BY 'discografia';
+GRANT ALL PRIVILEGES ON discografia.* TO 'discografia'@'localhost' WITH GRANT OPTION;
