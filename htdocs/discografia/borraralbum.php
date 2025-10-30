@@ -3,12 +3,17 @@
 
 $opc = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');
 try {
-    $dwes = new PDO('mysql:host=localhost;dbname=discografia', 'discografia', 'discografia', $opc);
+    // Usa 127.0.0.1 en lugar de localhost para evitar conflictos con sockets
+    $dwes = new PDO(
+        'mysql:host=localhost;port=3312;dbname=discografia;charset=utf8',
+        'discografia',
+        'discografia',
+        $opc
+    );
+    $dwes->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    echo 'Falló la conexión: ' . $e->getMessage();
-    exit;
+    die('Falló la conexión: ' . $e->getMessage());
 }
-
 // Recoge el código del álbum
 $cod = isset($_GET['codigo']) ? $_GET['codigo'] : null;
 

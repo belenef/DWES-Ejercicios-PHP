@@ -7,15 +7,19 @@ $campo = "ambos";
 $genero = "";
 
 // Conexión PDO
-$opc = [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'];
+$opc = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');
 try {
-    $dwes = new PDO('mysql:host=localhost;dbname=discografia', 'discografia', 'discografia', $opc);
+    // Usa 127.0.0.1 en lugar de localhost para evitar conflictos con sockets
+    $dwes = new PDO(
+        'mysql:host=localhost;port=3312;dbname=discografia;charset=utf8',
+        'discografia',
+        'discografia',
+        $opc
+    );
     $dwes->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    $mensaje = "Error conexión base de datos: " . htmlspecialchars($e->getMessage());
-    $dwes = null;
+    die('Falló la conexión: ' . $e->getMessage());
 }
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $dwes) {
     $busqueda = trim($_POST['busqueda'] ?? '');
     $campo = $_POST['campo'] ?? 'ambos'; // titulo, album, ambos
