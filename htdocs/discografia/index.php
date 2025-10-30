@@ -8,7 +8,7 @@ if (isset($_GET['mensaje']) && $_GET['mensaje'] === 'creado') {
 // conexion base de datos discografia
 $opc = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');
 try {
-    // Usa 127.0.0.1 en lugar de localhost para evitar conflictos con sockets
+    
     $dwes = new PDO(
         'mysql:host=localhost;port=3312;dbname=discografia;charset=utf8',
         'discografia',
@@ -24,7 +24,7 @@ try {
     $resultado = $dwes->query($consulta);
 
 
-    // Logout: eliminar sesión y redirigir
+    // Logout
 if (isset($_GET['logout'])) {
     session_destroy(); // Destruir la sesión
     header("Location: ../5.3/login.php"); // Redirigir al login
@@ -72,7 +72,7 @@ if (isset($_GET['logout'])) {
         <header>
             
             <?php if (isset($_SESSION['usuario'])): ?>
-                <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario']); ?></span>
+                <span>Bienvenid@, <?php echo htmlspecialchars($_SESSION['usuario']); ?></span>
                 <a href="?logout" class="logout">Logout</a>
             <?php endif; ?>
 

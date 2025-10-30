@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 $mensaje = "";
 $resultados = [];
@@ -6,10 +7,24 @@ $busqueda = "";
 $campo = "ambos";
 $genero = "";
 
+// Configuración de cookie para últimas búsquedas
+$cookieName = 'latest_searches_discografia';
+$maxSaved = 5;
+$cookieTtl = time() + 30*24*3600; // 30 días
+
+// Manejo de limpiar búsquedas (antes de cualquier salida)
+if (isset($_GET['clear_searches'])) {
+    setcookie($cookieName, '', time() - 3600, '/');
+    // redirigir sin parámetros
+    $base = strtok($_SERVER['REQUEST_URI'], '?');
+    header('Location: ' . $base);
+    exit();
+}
+
 // Conexión PDO
 $opc = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');
 try {
-    // Usa 127.0.0.1 en lugar de localhost para evitar conflictos con sockets
+    
     $dwes = new PDO(
         'mysql:host=localhost;port=3312;dbname=discografia;charset=utf8',
         'discografia',
@@ -20,52 +35,113 @@ try {
 } catch (PDOException $e) {
     die('Falló la conexión: ' . $e->getMessage());
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $dwes) {
-    $busqueda = trim($_POST['busqueda'] ?? '');
-    $campo = $_POST['campo'] ?? 'ambos'; // titulo, album, ambos
-    $genero = $_POST['genero'] ?? '';
 
+// Función para realizar búsqueda
+function realizar_busqueda($dwes, $busqueda, $campo, $genero, &$mensaje) {
+    $resultados = [];
+    $busqueda = trim($busqueda);
     if ($busqueda === '') {
         $mensaje = "Introduce un término de búsqueda.";
-    } else {
-        $param = '%' . $busqueda . '%';
-        $params = [':p' => $param];
-
-        // Construir WHERE según opciones
-        $where = [];
-        if ($campo === 'titulo') {
-            $where[] = "titulo LIKE :p";
-        } elseif ($campo === 'album') {
-            $where[] = "album LIKE :p";
-        } else { // ambos
-            $where[] = "(titulo LIKE :p OR album LIKE :p)";
-        }
-
-        // Si se ha elegido un género (no vacío), añadirlo como filtro exacto
-        if ($genero !== '') {
-            $where[] = "genero = :g";
-            $params[':g'] = $genero;
-        }
-
-        // Construir la consulta final
-        $sql = "SELECT * FROM cancion";
-        if (!empty($where)) {
-            $sql .= " WHERE " . implode(" AND ", $where);
-        }
-        $sql .= " ORDER BY titulo";
-
-        // Ejecutar consulta
-        try {
-            $stmt = $dwes->prepare($sql);
-            $stmt->execute($params);
-            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (empty($resultados)) {
-                $mensaje = "No se han encontrado canciones para '" . htmlspecialchars($busqueda) . "'.";
-            }
-        } catch (PDOException $e) {
-            $mensaje = "Error en la búsqueda: " . htmlspecialchars($e->getMessage());
-        }
+        return $resultados;
     }
+
+    $param = '%' . $busqueda . '%';
+    $params = [':p' => $param];
+
+    $where = [];
+    if ($campo === 'titulo') {
+        $where[] = "titulo LIKE :p";
+    } elseif ($campo === 'album') {
+        $where[] = "album LIKE :p";
+    } else { // ambos
+        $where[] = "(titulo LIKE :p OR album LIKE :p)";
+    }
+
+    if ($genero !== '') {
+        $where[] = "genero = :g";
+        $params[':g'] = $genero;
+    }
+
+    $sql = "SELECT * FROM cancion";
+    if (!empty($where)) {
+        $sql .= " WHERE " . implode(" AND ", $where);
+    }
+    $sql .= " ORDER BY titulo";
+
+    try {
+        $stmt = $dwes->prepare($sql);
+        $stmt->execute($params);
+        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (empty($resultados)) {
+            $mensaje = "No se han encontrado canciones para '" . htmlspecialchars($busqueda) . "'.";
+        }
+    } catch (PDOException $e) {
+        $mensaje = "Error en la búsqueda: " . htmlspecialchars($e->getMessage());
+    }
+
+    return $resultados;
+}
+
+// Procesar búsqueda desde POST (formulario) o GET (enlaces de últimas búsquedas)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $dwes) {
+    $busqueda = trim($_POST['busqueda'] ?? '');
+    $campo = $_POST['campo'] ?? 'ambos';
+    $genero = $_POST['genero'] ?? '';
+
+    if ($busqueda !== '') {
+        $resultados = realizar_busqueda($dwes, $busqueda, $campo, $genero, $mensaje);
+
+        // Actualizar cookie de últimas búsquedas
+        $saved = [];
+        if (!empty($_COOKIE[$cookieName])) {
+            $decoded = json_decode($_COOKIE[$cookieName], true);
+            if (is_array($decoded)) $saved = $decoded;
+        }
+        $normalized = mb_strtolower($busqueda);
+        foreach ($saved as $k => $v) {
+            if (mb_strtolower($v) === $normalized) {
+                unset($saved[$k]);
+            }
+        }
+        array_unshift($saved, $busqueda);
+        $saved = array_slice($saved, 0, $maxSaved);
+        setcookie($cookieName, json_encode($saved), $cookieTtl, '/');
+    } else {
+        $mensaje = "Introduce un término de búsqueda.";
+    }
+} elseif (isset($_GET['q']) && $dwes) {
+    // Búsqueda triggered desde enlace de últimas búsquedas (GET)
+    $busqueda = trim($_GET['q']);
+    $campo = $_GET['campo'] ?? 'ambos';
+    $genero = $_GET['genero'] ?? '';
+
+    if ($busqueda !== '') {
+        $resultados = realizar_busqueda($dwes, $busqueda, $campo, $genero, $mensaje);
+
+        // Actualizar cookie también para búsquedas por GET
+        $saved = [];
+        if (!empty($_COOKIE[$cookieName])) {
+            $decoded = json_decode($_COOKIE[$cookieName], true);
+            if (is_array($decoded)) $saved = $decoded;
+        }
+        $normalized = mb_strtolower($busqueda);
+        foreach ($saved as $k => $v) {
+            if (mb_strtolower($v) === $normalized) {
+                unset($saved[$k]);
+            }
+        }
+        array_unshift($saved, $busqueda);
+        $saved = array_slice($saved, 0, $maxSaved);
+        setcookie($cookieName, json_encode($saved), $cookieTtl, '/');
+        // No redirect: mostramos resultados directamente
+    }
+}
+
+// Leer últimas búsquedas para mostrar 
+$latestSearches = [];
+if (!empty($_COOKIE[$cookieName])) {
+    $decoded = json_decode($_COOKIE[$cookieName], true);
+    if (is_array($decoded)) $latestSearches = $decoded;
 }
 ?>
 <!DOCTYPE html>
@@ -127,6 +203,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $dwes) {
             color:#900; 
             margin-top:8px; 
         }
+        .latest {
+            margin-top: 12px;
+            background: #fff;
+            padding: 8px;
+            border-radius: 8px;
+            max-width: 520px;
+        }
+        .latest ul { margin: 6px 0 0 18px; padding:0; }
+        .latest a { text-decoration: none; color: #007BFF; }
+        .clear-btn { margin-left: 8px; font-size:0.9em; }
     </style>
 </head>
 <body>
@@ -151,12 +237,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $dwes) {
 
             <label for="genero">Género musical:</label>
             <select id="genero" name="genero">
+                <option value="" <?php if($genero === '') echo 'selected'; ?>>-- Todos --</option>
                 <option value="Pop" <?php if($genero === 'Pop') echo 'selected'; ?>>Pop</option>
             </select>
 
             <br>
             <button type="submit">Buscar</button>
+            <?php if (!empty($latestSearches)): ?>
+                <a class="clear-btn" href="?clear_searches=1">Limpiar últimas búsquedas</a>
+            <?php endif; ?>
         </form>
+
+        <?php if (!empty($latestSearches)): ?>
+            <div class="latest">
+                <strong>Últimas búsquedas</strong>
+                <ul>
+                    <?php foreach ($latestSearches as $s): ?>
+                        <li>
+                            <a href="?q=<?php echo urlencode($s); ?>"><?php echo htmlspecialchars($s); ?></a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
     </div>
 
     <!--Si hay resultados, mostrar la tabla-->

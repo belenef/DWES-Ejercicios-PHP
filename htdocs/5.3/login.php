@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Logout: eliminar sesión y redirigir
+// Logout
 if (isset($_GET['logout'])) {
     session_destroy(); // Destruir la sesión
     header("Location: " . $_SERVER['PHP_SELF']); // Redirigir al login

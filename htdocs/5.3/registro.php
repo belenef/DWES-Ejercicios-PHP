@@ -1,7 +1,9 @@
 <?php
 
+session_start();
+
 $opc = [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'];
-$mensaje = "";  // Asegúrate de inicializar $mensaje
+$mensaje = "";  
 
 try {
     $dwes = new PDO('mysql:host=localhost;dbname=discografia', 'discografia', 'discografia', $opc);
@@ -12,8 +14,15 @@ try {
     $mensaje = "Error de conexión a la base de datos.";
 }
 
+// Logout
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Asegúrate de que los datos estén disponibles antes de usarlos
+    
     if (!empty($_POST["usuario"]) && !empty($_POST["password"])) {
         $usuario = $_POST["usuario"];
         $password = $_POST["password"];
@@ -24,10 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $dwes->prepare("INSERT INTO tabla_usuarios (usuario, password) VALUES (:usuario, :password)");
             $stmt->execute([':usuario' => $usuario, ':password' => $password_hashed]);
 
-            // Si la inserción fue exitosa, establece el mensaje de éxito
             $mensaje = "Te has registrado correctamente! :)";
 
-            header("Location: login.php");
+            header("Location: ../5.3/login.php");
             exit();
 
         } catch (PDOException $e) {
@@ -58,11 +66,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .mensaje { color: green; }
         .error { color: red; }
+
+        header {
+            margin-bottom: 20px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .title { margin:0; font-size:1.5em; }
+        .logout {
+            padding: 8px 16px;
+            background-color: #f44336;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .logout:hover { background-color: #d32f2f; }
+
+        .login-btn {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .login-btn:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
 
-    <h1>Registro</h1>
+    <header>
+        <h1 class="title">Registro</h1>
+        <?php if (isset($_SESSION['usuario'])): ?>
+            <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario']); ?></span>
+            <a href="?logout" class="logout">Logout</a>
+        <?php else: ?>
+            <a href="login.php" class="login-btn">Login</a>
+        <?php endif; ?>
+    </header>
 
     <!--Lanza mensaje si hay error o no-->
     <?php if ($mensaje !== ""): ?>
