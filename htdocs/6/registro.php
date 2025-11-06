@@ -1,127 +1,114 @@
 <?php
-
 session_start();
+require_once 'conexion.php'; // conexión PDO
 
-$opc = [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'];
-$mensaje = "";  
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = trim($_POST['username']);
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-try {
-    $dwes = new PDO('mysql:host=localhost;dbname=discografia', 'discografia', 'discografia', $opc);
-    $dwes->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    // Si falla la conexión mostramos mensaje en la página
-    $dwes = null;
-    $mensaje = "Error de conexión a la base de datos.";
-}
-
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
-    if (!empty($_POST["usuario"]) && !empty($_POST["password"])) {
-        $usuario = $_POST["usuario"];
-        $password = $_POST["password"];
-
-        $password_hashed = password_hash($password, PASSWORD_DEFAULT);
-
-        try {
-            $stmt = $dwes->prepare("INSERT INTO tabla_usuarios (usuario, password) VALUES (:usuario, :password)");
-            $stmt->execute([':usuario' => $usuario, ':password' => $password_hashed]);
-
-            $mensaje = "Te has registrado correctamente! :)";
-
-            header("Location: login.php");
-            exit();
-
-        } catch (PDOException $e) {
-            // Maneja posibles errores en la inserción
-            $mensaje = "Error al registrar el usuario: " . $e->getMessage();
-        }
-    } else {
-        $mensaje = "Por favor, llena todos los campos.";
+    if (!isset($_FILES['imagen']) || $_FILES['imagen']['error'] != UPLOAD_ERR_OK) {
+        die("Error al subir la imagen.");
     }
-}
 
+    // Validar tipo de imagen (solo PNG o JPG)
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $tipo = $finfo->file($_FILES['imagen']['tmp_name']);
+    $extensiones = ['jpg' => 'image/jpeg', 'png' => 'image/png'];
+
+    if (false === $ext = array_search($tipo, $extensiones, true)) {
+        die("❌ Formato no permitido. Solo se aceptan imágenes PNG o JPG.");
+    }
+
+    // Comprobar que GD esté habilitado
+    if (!extension_loaded('gd')) {
+        die("⚠️ Error: La extensión GD no está habilitada en tu PHP.");
+    }
+
+    // Crear carpeta del usuario
+    $ruta_usuario = "img/users/$username";
+    if (!is_dir($ruta_usuario)) {
+        mkdir($ruta_usuario, 0777, true);
+    }
+
+    // Cargar la imagen original
+    $imagen = ($ext == 'jpg') ? imagecreatefromjpeg($_FILES['imagen']['tmp_name'])
+                              : imagecreatefrompng($_FILES['imagen']['tmp_name']);
+
+    // Crear versiones con tamaños exactos
+    $grande = imagescale($imagen, 360, 480); // para el perfil
+    $pequena = imagescale($imagen, 72, 96);  // para mostrar junto al nombre
+
+    // Guardar archivos
+    $big_path = "$ruta_usuario/{$username}Big.$ext";
+    $small_path = "$ruta_usuario/{$username}Small.$ext";
+
+    if ($ext == 'jpg') {
+        imagejpeg($grande, $big_path);
+        imagejpeg($pequena, $small_path);
+    } else {
+        imagepng($grande, $big_path);
+        imagepng($pequena, $small_path);
+    }
+
+    imagedestroy($imagen);
+    imagedestroy($grande);
+    imagedestroy($pequena);
+
+    // Guardar en la base de datos
+    $sql = "INSERT INTO usuarios (username, password, img_big, img_small)
+            VALUES (:username, :password, :img_big, :img_small)";
+    $stmt = $dwes->prepare($sql);
+    $stmt->execute([
+        ':username' => $username,
+        ':password' => $password,
+        ':img_big' => $big_path,
+        ':img_small' => $small_path
+    ]);
+
+    echo "✅ Usuario registrado con éxito. <a href='login.php'>Inicia sesión</a>";
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
-    <title>Registro</title>
+    <meta charset="UTF-8"><title>Registro</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 20px; 
-            background: #f4f4f4; 
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
         }
-        input[type="text"], input[type="password"] {
-            width: 200px; 
-            border-radius: 6px;
-            margin-bottom: 4px; 
-        }
-        .mensaje { color: green; }
-        .error { color: red; }
-
         header {
+            text-align: center;
             margin-bottom: 20px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
         }
-        .title { margin:0; font-size:1.5em; }
-        .logout {
-            padding: 8px 16px;
-            background-color: #f44336;
-            color: white;
+        h1 {
+            color: #333;
+        }
+        .custom-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .custom-list li {
+            margin-bottom: 10px;
+        }
+        .custom-list li a {
             text-decoration: none;
-            border-radius: 4px;
+            color: #007BFF;
         }
-        .logout:hover { background-color: #d32f2f; }
-
-        .login-btn {
-            padding: 8px 16px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
+        .custom-list li a:hover {
+            text-decoration: underline;
         }
-        .login-btn:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1 class="title">Registro</h1>
-        <?php if (isset($_SESSION['usuario'])): ?>
-            <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario']); ?></span>
-        <?php else: ?>
-            <a href="login.php" class="login-btn">Login</a>
-        <?php endif; ?>
-    </header>
-
-    <!--Lanza mensaje si hay error o no-->
-    <?php if ($mensaje !== ""): ?>
-        <p class="<?php echo ($mensaje === 'Te has registrado correctamente! :)') ? 'mensaje' : 'error'; ?>">
-            <?php echo htmlspecialchars($mensaje); ?>
-        </p>
-    <?php endif; ?>
-
-    <form method="post" action="">
-        <div>
-            <!--Label para el usuario-->
-            <label for="usuario">Nombre de usuario:</label>
-            <!--Input para el usuario-->
-            <input type="text" id="usuario" name="usuario" required>
-        </div>
-        <div>
-            <!--Label para la contraseña-->
-            <label for="password">Escribe una contraseña:</label>
-            <!--Input para la contraseña-->
-            <input type="password" id="password" name="password" required>
-        </div>
-        <!--Botón de envío-->
-        <div style="margin-top: 10px;">
-            <button type="submit">Registrarme</button>
-        </div>
-    </form>
+<h2>Registro de usuario</h2>
+<form action="registro.php" method="POST" enctype="multipart/form-data">
+    Usuario: <input type="text" name="username" required><br>
+    Contraseña: <input type="password" name="password" required><br>
+    Imagen de perfil: <input type="file" name="imagen" required><br>
+    <input type="submit" value="Registrar">
+</form>
 </body>
 </html>

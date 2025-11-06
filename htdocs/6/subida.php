@@ -1,120 +1,66 @@
 <?php
-// Iniciar la sesión
 session_start();
-
-// Cerrar sesión cuando se presiona el botón de logout
-    // Logout
-if (isset($_GET['logout'])) {
-    session_destroy(); // Destruir la sesión
-    header("Location: login.php"); // Redirigir al login
+if (!isset($_SESSION['usuario'])) {
+    header("Location: login.php");
     exit();
 }
+
+$usuario = $_SESSION['usuario'];
+$img_small = $_SESSION['img_small'];
+$img_big = $_SESSION['img_big'];
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subir Archivos</title>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 20px; 
-            background: #f4f4f4; 
-        }
-        input[type="text"], input[type="password"] {
-            width: 200px; 
-            border-radius: 6px;
-            margin-bottom: 4px; 
-        }
-        .mensaje { color: green; }
-        .error { color: red; }
-
-        header {
-            margin-bottom: 10px;
-        }
-
-       
-        .title { margin: 0; font-size: 1.5em; }
-
-        .logout {
-            margin-bottom: 30px;
-            padding: 4px 8px;
-            background-color: #f44336;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            
-            
-        }
-        .logout:hover { background-color: #d32f2f; }
-
-        .login-btn {
-            padding: 8px 16px;
-            
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-        
-    </style>
+<meta charset="UTF-8">
+<title>Perfil de <?php echo htmlspecialchars($usuario); ?></title>
+<style>
+    body { 
+        font-family: Arial, sans-serif; 
+        text-align: center; 
+        margin-top: 50px; 
+    }
+    .perfil { 
+        border: 1px solid #ccc; 
+        display: inline-block; 
+        padding: 20px; 
+        border-radius: 10px; 
+    }
+    .nombre { 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        gap: 10px; 
+        margin-bottom: 20px; 
+    }
+    .nombre img { 
+        width: 72px; 
+        height: 96px; 
+        border-radius: 5px; 
+        object-fit: cover; 
+    }
+    .imagen-grande { 
+        width: 360px; 
+        height: 480px; 
+        border-radius: 10px; 
+        object-fit: cover; 
+    }
+</style>
 </head>
 <body>
 
-<header>
-        <?php if (isset($_SESSION['usuario'])): ?>
-            <a href="?logout" class="logout">Logout</a><br><br>
-                <span>Bienvenid@, <?php echo htmlspecialchars($_SESSION['usuario']); ?></span>
-                <hr>
-            <?php endif; ?>
-    <h1 class="title">Subir Archivos</h1>
-    
-</header>
+<div class="perfil">
+    <div class="nombre">
+        <img src="<?php echo htmlspecialchars($img_small); ?>" alt="Mini perfil">
+        <h2><?php echo htmlspecialchars($usuario); ?></h2>
+    </div>
 
+    <h3>Imagen de perfil (360x480):</h3>
+    <img src="<?php echo htmlspecialchars($img_big); ?>" alt="Imagen grande" class="imagen-grande"><br><br>
 
-<form action="subida.php" method="post" enctype="multipart/form-data">
-    <label for="archivo">Selecciona el archivo a subir:</label>
-    <input type="file" name="archivo" id="archivo">
-    <input type="hidden" name="MAX_FILE_SIZE" value="1000000">
-    <input type="submit" value="Enviar">
-</form>
-
-<?php
-// Comprobar si hay algún archivo cargado
-if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
-    echo '<br>';
-    echo '<i><b> Archivo cargado: </b></i>' . $_FILES['archivo']['name'];
-}
-
-// Lógica para la validación del archivo subido
-switch ($_FILES['archivo']['error']) {
-    case UPLOAD_ERR_OK:
-        break;
-    case UPLOAD_ERR_NO_FILE:
-        throw new RuntimeException('No file sent.');
-    case UPLOAD_ERR_INI_SIZE:
-    case UPLOAD_ERR_FORM_SIZE:
-        throw new RuntimeException('Exceeded filesize limit.');
-    default:
-        throw new RuntimeException('Unknown errors.');
-}
-
-$finfo = new finfo(FILEINFO_MIME_TYPE);
-$ext = array_search(
-    $finfo->file($_FILES['archivo']['tmp_name']),
-    array(
-        'jpg' => 'image/jpeg',
-        'png' => 'image/png',
-    ),
-    true
-);
-
-if ($ext === false) {
-    throw new RuntimeException('Invalid file format.');
-}
-?>
+    <a href="logout.php">Cerrar sesión</a>
+</div>
 
 </body>
 </html>
