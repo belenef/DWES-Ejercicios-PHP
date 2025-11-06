@@ -10,19 +10,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Error al subir la imagen.");
     }
 
-    // Validar tipo de imagen (solo PNG o JPG)
+    // Validar tipo de imagen 
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     $tipo = $finfo->file($_FILES['imagen']['tmp_name']);
     $extensiones = ['jpg' => 'image/jpeg', 'png' => 'image/png'];
 
     if (false === $ext = array_search($tipo, $extensiones, true)) {
-        die("❌ Formato no permitido. Solo se aceptan imágenes PNG o JPG.");
+        die("Formato no permitido. Solo se aceptan imágenes PNG o JPG.");
     }
 
-    // Comprobar que GD esté habilitado
-    if (!extension_loaded('gd')) {
-        die("⚠️ Error: La extensión GD no está habilitada en tu PHP.");
-    }
 
     // Crear carpeta del usuario
     $ruta_usuario = "img/users/$username";
@@ -65,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ':img_small' => $small_path
     ]);
 
-    echo "✅ Usuario registrado con éxito. <a href='login.php'>Inicia sesión</a>";
+    echo "<p style='color: red;'Usuario registrado con éxito.> <a href='login.php'>Inicia sesión</a></p>";
 }
 ?>
 
