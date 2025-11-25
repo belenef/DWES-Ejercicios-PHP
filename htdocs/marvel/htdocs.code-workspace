@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"name": "htdocs",
+			"path": "../.."
+		},
+		{
+			"name": "HTML-ejercicios",
+			"path": "../../../../Users/belescfer/2DAW/HTML-ejercicios"
+		},
+		{
+			"name": "DWEC",
+			"path": "../../../../Users/belescfer/Downloads/DWEC-Ejercicios-main (1)/DWEC-Ejercicios-main/DWEC"
+		},
+		{
+			"name": "WEB_PROYECTO",
+			"path": "../../../../Users/belescfer/Desktop/WEB_PROYECTO"
+		},
+		{
+			"name": "DIW",
+			"path": "../../../../Users/belescfer/Desktop/DIW"
+		},
+		{
+			"name": "BUSCADOR_RECETAS",
+			"path": "../../../../Users/belescfer/Downloads/2. FICHEROS Buscador Recetas-20251112/BUSCADOR_RECETAS"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "htdocs"
+	}
+}
