@@ -12,6 +12,7 @@ body {
     flex-direction: column;
 }
 
+
 header {
 	background-image: url("img/container_bg.png");
 	font-weight: bold;
@@ -157,3 +158,4 @@ footer {
 	align-items: center; 
 	font-style: italic;
 }
+

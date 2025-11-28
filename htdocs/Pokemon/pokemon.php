@@ -85,6 +85,7 @@ $weight = $data['weight'];
 <header>Mi blog de <img src="img/International_Pokémon_logo.svg.png" alt="Pokémon Logo"></header>
 <nav>
     <strong>
+        <a href="index.php">Inicio</a> &nbsp;&nbsp;
         <a href="region.php?name=kanto">G1 Kanto</a> &nbsp;&nbsp;
         <a href="region.php?name=johto">G2 Johto</a> &nbsp;&nbsp;
         <a href="region.php?name=hoenn">G3 Hoenn</a> &nbsp;&nbsp;

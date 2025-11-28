@@ -148,8 +148,10 @@ if ($search_name) {
         width: 250px;
         height: 250px;
         display: block;
-        margin: 0 auto 10px auto; 
+        margin: 0 auto 10px auto;
+
     }
+  
     .pokemon-info {
         font-size: 20px;
         text-align: left;
@@ -160,6 +162,7 @@ if ($search_name) {
 <header>Mi blog de <img src="img/International_Pokémon_logo.svg.png" alt="Logo"></header>
 <nav>
     <strong>
+        <a href="index.php">Inicio</a> &nbsp;&nbsp;
         <a href="region.php?name=kanto">G1 Kanto</a> &nbsp;&nbsp;
         <a href="region.php?name=johto">G2 Johto</a> &nbsp;&nbsp;
         <a href="region.php?name=hoenn">G3 Hoenn</a> &nbsp;&nbsp;
