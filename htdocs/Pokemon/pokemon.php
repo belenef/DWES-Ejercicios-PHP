@@ -110,6 +110,6 @@ $weight = $data['weight'];
     </article>
 </main>
 
-<footer>Trabajo <strong>Desarrollo Web en Entorno Servidor</strong> 2023/2024 IES Serra Perenxisa.</footer>
+<footer> Trabajo &nbsp;<strong> Desarrollo Web en Entorno Servidor </strong>&nbsp; 2023/2024 IES Serra Perenxisa.</footer>
 </body>
 </html>
