@@ -52,7 +52,7 @@ $weight = $data['weight'];
             max-width: 400px;
             width: 90%;
             box-shadow: 4px 10px 15px rgba(0,0,0,0.3);
-            background-color: rgba(187, 194, 190, 0.8);
+            background-color: rgba(241, 182, 18, 0.8);
         }
 
         article h1, article p {
@@ -63,7 +63,13 @@ $weight = $data['weight'];
 
         article h1{
             border-bottom: 5px solid #fff;
-
+            text-shadow: 2px 2px 2px gray;
+            
+        }
+        article strong{
+            color: whitesmoke;
+            text-shadow: 2px 2px 2px gray;
+            
         }
 
 
